@@ -73,7 +73,7 @@
 <html lang="en">
 
 <head>
-    <title>"housing-co"<title>
+    <title>"housing-co"</title>
             <meta charset="UTF-8">
             <meta name="description" content="housing-co">
             <meta name="keywords" content="LERAMIZ, unica, creative, html">
