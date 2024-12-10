@@ -68,7 +68,7 @@
 			<div class="row">
 				<div class="col-12">
 					<div class="site-navbar">
-						<a href="#" class="site-logo"><img src="img/logo1.png" alt=""></a>
+						<a href="#" class="site-logo"><img src="" alt=""></a>
 						<div class="nav-switch">
 							<i class="fa fa-bars"></i>
 						</div>
@@ -88,11 +88,10 @@
 	<!-- Header section end -->
 
 
-	<!-- Hero section -->
+	<!-- Hero section  -->
 	<section class="hero-section set-bg" data-setbg="img/bg.jpg">
 		<div class="container hero-text text-white">
-			<h2>List your building on our website</h2>
-			<a href="addprojectrent.php" class="site-btn">Add Now</a>
+			<h2>	</h2>
 		</div>
 	</section>
 
