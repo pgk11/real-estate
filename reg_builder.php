@@ -10,7 +10,9 @@ function test_input($data) {
   return $data;
 }
 
+
 $usernameErr = $nameErr = $surnameErr = $emailErr = $passwordErr = $cpasswordErr = $phoneErr = $lnoErr= "";
+$pass_hash = "";
 $b=true;
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if (empty($_POST["username"])) {
@@ -66,6 +68,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
       $cpasswordErr = "*Password does not match ";
       $b=false;
     }
+	//Implementing password hashing using SHA-256 encryption
+	else {
+		$pass_hash = hash("sha256", $password);
+	}
   }
 
   if (empty($_POST["phone"])) {
@@ -91,7 +97,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 }
 if($b==true && isset($_POST['submit']))
 {
-		$sql = "insert into login_builder(username,lno,password,emailid,phoneno,nameorg) values('$username', $lno,'$password','$email',$phone,'$name')";
+		$sql = "insert into login_builder(username,lno,password_hash,emailid,phoneno,nameorg) values('$username', $lno,'$pass_hash','$email',$phone,'$name')";
 		$res=$conn->query($sql);
 		echo "insert done";
     $sql1="select bid from login_builder where username='$username'";
@@ -172,7 +178,7 @@ if($b==true && isset($_POST['submit']))
 			<div class="row">
 				<div class="col-12">
 					<div class="site-navbar">
-						<a href="index.html" class="site-logo"><img src="img/logo1.png" alt=""></a>
+						<a href="index.html" class="site-logo"><img src="" alt=""></a>
 						<div class="nav-switch">
 							<i class="fa fa-bars"></i>
 						</div>

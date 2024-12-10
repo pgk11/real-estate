@@ -7,8 +7,9 @@
         $data = htmlspecialchars($data);
         return $data;
       }
+	
     $username='';$password='';$b=true;
-	$attemptcount = 0;
+	$pass_hash=""; $passErr="";
     if ($_SERVER["REQUEST_METHOD"] == "POST")
     {
         if(isset($_POST['username']))
@@ -20,7 +21,7 @@
 		//secretkey of google recaptcha
 		$secretkey = "6Le8G5QqAAAAAErXlpgl1V7m3StPEk70X2-7U7zo";
 		$recaptcha_response = $_POST['g-recaptcha-response'];
-		
+		$pass_hash = hash("sha256", $password);
 		// Verify response of recaptcha
 		$verifylink = "https://www.google.com/recaptcha/api/siteverify";
 		$response = file_get_contents($verifylink."?secret=".$secretkey."&response=".$recaptcha_response);
@@ -40,17 +41,37 @@
         {
             $id='uid';
             $tablename='login';
+			// Set secure cookie parameters
+			setcookie(
+				'PHP_SESSION_ID',
+				'user-session',
+				[
+				'httponly' => true,
+				'secure' => true,
+				'samesite' => 'Strict'
+				]
+			);
         }
         else if($type=='builder')
         {
             $id='bid';
             $tablename='login_builder';
+			// Set secure cookie parameters
+			setcookie(
+				'PHP_SESSION_ID',
+				'builder-session',
+				[
+				'httponly' => true,
+				'secure' => true,
+				'samesite' => 'Strict'
+				]
+			);
         }
         if ($responseData->success) 
 		{
 			
 		
-			$q="select $id,password from $tablename where username='$username'";
+			$q="select $id,password_hash from $tablename where username='$username'";
 			echo $q;
 			$result=$conn->query($q);
 			if($result==true)
@@ -61,11 +82,13 @@
 			{
 						header('Location: loginuser.php');
 			}
-			if($row['password']==$password && $attemptcount < 3)
+			if($row['password_hash']==$pass_hash && $row['login_count'] < 3)
 			{
-				$attemptcount = 0;
+				
+				$_SESSION['login_count'] = 0;
 				$_SESSION['username']=$username;
 				$_SESSION['type']=$type;
+				
 				if($id=='uid' && $b==true)
 				{
 					$_SESSION['id']=$row['uid'];
@@ -76,19 +99,23 @@
 					$_SESSION['id']=$row['bid'];
 					header('Location: builderHome.php');
 				}
+				echo $_SESSION['login_count'];
 			}
-			else if ($attemptcount >= 3){
-				echo "<script>alert('Account Locked out');window.history.back();</script>";
+			else if ($_SESSION['login_count'] >= 3){
+				echo $_SESSION['login_count'];
+				$passErr = "Invalid Password!!!!";
 			}
 			else
 			{
-				$attemptcount++;
-				echo "<script>alert('Invalid Password!!!!'); window.location.href = 'loginuser.php';</script>";
+				$row['login_count'] += 1;
+				echo $_SESSION['login_count'];
+				$passErr = "Invalid Password!!!!";
+				echo "<script>alert('Invalid Password!!!!');</script>";
 				header('Location: loginuser.php');
 			}
 		}
 		else {
-			echo "Invalid Captcha";
+			echo "<script>alert('Invalid Captcha!')</script>";
 		}
     }
 ?>
@@ -294,7 +321,7 @@
             <tr>
                 <td><b>PASSWORD:</b></td>
                 <td><input type="password" name="password" size="30">
-                    <span class="error"></span>
+                    <span class="error"><?php echo $passErr; ?></span>
                     <br><br>
                 </td>
             </tr>

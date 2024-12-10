@@ -34,9 +34,6 @@
 
 </head>
 <body>
-	<div id="preloder">
-		<div class="loader"></div>
-	</div>
 	
 	<!-- Header section -->
 	<header class="header-section">

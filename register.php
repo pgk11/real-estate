@@ -10,6 +10,7 @@ function test_input($data) {
 }
 
 $usernameErr = $nameErr = $surnameErr = $emailErr = $passwordErr = $cpasswordErr = $phoneErr = "";
+$pass_hash="";
 $b=true;
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if (empty($_POST["username"])) {
@@ -75,6 +76,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
       $cpasswordErr = "*Password does not match ";
       $b=false;
     }
+	
+	// Implemented password hashing
+	else {
+		$pass_hash = hash("sha256",$password);
+	}
   }
 
   if (empty($_POST["phone"])) {
@@ -90,7 +96,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 }
 if($b==true && isset($_POST['submit']))
 {
-    $sql = "insert into login(username,password,name,surname,email,phone) values('$username','$password','$name','$surname','$email',$phone)";
+    $sql = "insert into login(username,password_hash,name,surname,email,phone) values('$username','$pass_hash','$name','$surname','$email',$phone)";
 		$res=$conn->query($sql);
     $sql1="select uid from login where username='$username'";
     $result=$conn->query($sql1);
@@ -169,7 +175,7 @@ if($b==true && isset($_POST['submit']))
 			<div class="row">
 				<div class="col-12">
 					<div class="site-navbar">
-						<a href="index.html" class="site-logo"><img src="img/logo1.png" alt=""></a>
+						<a href="index.html" class="site-logo"><img src="" alt=""></a>
 						<div class="nav-switch">
 							<i class="fa fa-bars"></i>
 						</div>
