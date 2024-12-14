@@ -10,6 +10,8 @@
 	
     $username='';$password='';$b=true;
 	$pass_hash=""; $passErr="";
+	$login_attempts=0;
+	//$incr_query="";
     if ($_SERVER["REQUEST_METHOD"] == "POST")
     {
         if(isset($_POST['username']))
@@ -41,6 +43,7 @@
         {
             $id='uid';
             $tablename='login';
+			$incr_query="UPDATE login SET login_count = login_count + 1 WHERE uid = $id";
 			// Set secure cookie parameters
 			setcookie(
 				'PHP_SESSION_ID',
@@ -56,6 +59,7 @@
         {
             $id='bid';
             $tablename='login_builder';
+			$incr_query="UPDATE login_builder SET login_count = login_count + 1 WHERE bid = $id";
 			// Set secure cookie parameters
 			setcookie(
 				'PHP_SESSION_ID',
@@ -71,8 +75,8 @@
 		{
 			
 		
-			$q="select $id,password_hash from $tablename where username='$username'";
-			echo $q;
+			$q="select $id,password_hash, login_count from $tablename where username='$username'";
+			
 			$result=$conn->query($q);
 			if($result==true)
 			{
@@ -82,7 +86,7 @@
 			{
 						header('Location: loginuser.php');
 			}
-			if($row['password_hash']==$pass_hash && $row['login_count'] < 3)
+			if($row['password_hash']==$pass_hash)
 			{
 				
 				$_SESSION['login_count'] = 0;
@@ -101,17 +105,22 @@
 				}
 				echo $_SESSION['login_count'];
 			}
-			else if ($_SESSION['login_count'] >= 3){
-				echo $_SESSION['login_count'];
-				$passErr = "Invalid Password!!!!";
-			}
 			else
 			{
-				$row['login_count'] += 1;
-				echo $_SESSION['login_count'];
-				$passErr = "Invalid Password!!!!";
-				echo "<script>alert('Invalid Password!!!!');</script>";
-				header('Location: loginuser.php');
+				if ($_SESSION['login_count'] >= 3){
+					//$increment = $mysqli->query($incr_query);
+					//$increment->bind_param("s", $username);
+					//$increment->execute();
+					echo "<script>alert('Account Locked out!')</script>";
+					$passErr = "Account Locked out!!!!";
+				}
+				else {
+					$_SESSION['login_count']++;
+					echo $_SESSION['login_count'];
+					$passErr = "Invalid Password!!!!";
+					echo "<script>alert('Invalid Password!!!!');</script>";
+					header('Location: loginuser.php');
+				}
 			}
 		}
 		else {

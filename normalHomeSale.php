@@ -52,7 +52,6 @@
 							<a href="https://www.facebook.com/"><i class="fa fa-facebook"></i></a>
 							<a href="https://www.twitter.com/"><i class="fa fa-twitter"></i></a>
 							<a href="https://www.instagram.com/"><i class="fa fa-instagram"></i></a>
-							<a href="https://www.pinterest.com/"><i class="fa fa-pinterest"></i></a>
 							<a href="https://www.linkedin.com/"><i class="fa fa-linkedin"></i></a>
 						
 							
@@ -90,10 +89,7 @@
 
 	<!-- Hero section -->
 	<section class="hero-section set-bg" data-setbg="img/bg.jpg">
-		<div class="container hero-text text-white">
-			<h2>List your building on our website</h2>
-			<a href="addprojectsale.php" class="site-btn">Add Now</a>
-		</div>
+		
 	</section>
 
 	<!-- Hero section end -->
